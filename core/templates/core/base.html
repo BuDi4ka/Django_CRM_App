@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
     <div>
@@ -16,6 +18,9 @@
                 <a href="/" class="py-4 px-6 bg-teal-300 rounded-xl text-white">Sign up</a>
             </div>
         </nav>
+
+        {% block content %}
+        {% endblock %}
 
         <footer class="py-8 text-center bg-gray-200">
             <p class="text-xs text-gray-700">Copyright (c) 2025 - Teal CRM</p>
