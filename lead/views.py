@@ -2,6 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .forms import AddLeadForm
+from .models import Lead
+
+
+@login_required
+def leads_list(request):
+    leads = Lead.objects.filter(created_by=request.user)
+
+    return render(request, 'lead/leads_list.html', {
+        'leads': leads
+    })
 
 
 @login_required
