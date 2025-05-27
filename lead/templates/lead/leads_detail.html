@@ -24,8 +24,8 @@
         <p class="mb-2">{{ lead.created_at }}</p>
 
         <p class="font-semibold">Modified at</p>
-        <p class="mb-2">{{ lead.modified_at }}</p>
+        <p class="mb-6">{{ lead.modified_at }}</p>
 
-
+        <a href="{% url 'leads-list' %}">Back to leads</a>
     </div>
 {% endblock %}
