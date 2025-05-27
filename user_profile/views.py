@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect
 
 from .models import UserProfile
@@ -20,3 +21,10 @@ def signup(request):
         'form': form
         }
         )
+
+
+class LogoutViaGet(LogoutView):
+    def get(self, request, *args, **kwargs):
+        print("Custom GET logout called")
+        return self.post(request, *args, **kwargs)
+    
