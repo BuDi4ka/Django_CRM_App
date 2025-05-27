@@ -24,6 +24,8 @@ def signup(request):
 
 
 class LogoutViaGet(LogoutView):
+    http_method_names = ['get', 'post', 'head', 'options'] 
+
     def get(self, request, *args, **kwargs):
         print("Custom GET logout called")
         return self.post(request, *args, **kwargs)
