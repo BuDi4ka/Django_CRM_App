@@ -9,7 +9,7 @@ Edit team - ({{ team.name }})
     <div class="py-6 px-6">
         <h1 class="text-xl">Edit team - ({{ team.name }})</h1>
 
-        <form action="{% url 'edit-team' team.id %}" method="POST">
+        <form action="{% url 'team:edit' team.id %}" method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button class="py-4 px-8 bg-teal-500 text-white rounded-xl">Submit</button>

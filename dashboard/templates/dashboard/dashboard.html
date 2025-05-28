@@ -18,7 +18,7 @@
                         <p class="text-xs">Status: {{ lead.get_status_display }}</p>
                         <p class="text-xs">Priority: {{ lead.get_priority_display }}</p>
 
-                        <a href={% url 'leads-detail' lead.id %}>Details</a>
+                        <a href={% url 'leads:detail' lead.id %}>Details</a>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -31,7 +31,7 @@
                     <div class="mb-2  client">
                         <h3 class="font-semibold">{{ client.name }}</h3>
 
-                        <a href={% url 'clients-detail' client.id %}>Details</a>
+                        <a href={% url 'clients:detail' client.id %}>Details</a>
                     </div>
                 {% endfor %}
             {% endif %}
