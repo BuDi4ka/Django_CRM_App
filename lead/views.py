@@ -8,7 +8,7 @@ from django.views.generic.edit import DeleteView
 from django.views import View
 
 from .forms import AddCommentForm
-from .models import Lead
+from .models import Lead, Comment as ClientComment
 
 from client.models import Client
 from team.models import Team
@@ -122,7 +122,7 @@ class ConvertLeadToClientView(View):
         lead = get_object_or_404(Lead, pk=pk, created_by=request.user)
         team = Team.objects.filter(created_by=request.user).first()
 
-        Client.objects.create(
+        client = Client.objects.create(
             name=lead.name,
             email=lead.email,
             description=lead.description,
@@ -132,6 +132,16 @@ class ConvertLeadToClientView(View):
 
         lead.converted_to_client = True
         lead.save()
+
+        comments = lead.comments.all()
+        
+        for comment in comments:
+            ClientComment.objects.create(
+                client = client,
+                content = comment.content,
+                created_by = comment.created_by,
+                team = team
+            )
 
         messages.success(request, 'The lead was converted to a client')
         return redirect('leads:list')
