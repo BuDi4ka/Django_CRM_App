@@ -7,6 +7,7 @@ from .forms import AddLeadForm
 from .models import Lead
 
 from client.models import Client
+from team.models import Team
 
 
 @login_required
@@ -66,8 +67,11 @@ def add_lead(request):
         form = AddLeadForm(request.POST)
 
         if form.is_valid():
+            team = Team.objects.filter(created_by=request.user)[0]
+
             lead = form.save(commit=False)
             lead.created_by = request.user
+            lead.team = team
             lead.save()
 
             messages.success(request, 'The lead was created.')
@@ -83,12 +87,14 @@ def add_lead(request):
 @login_required
 def convert_to_client(request, pk):
     lead = get_object_or_404(Lead, created_by=request.user)
+    team = Team.objects.filter(created_by=request.user)[0]
 
     client = Client.objects.create(
         name=lead.name,
         email=lead.email,
         description = lead.description,
-        created_by = request.user
+        created_by = request.user,
+        team = team
         )
     
     lead.converted_to_client = True
