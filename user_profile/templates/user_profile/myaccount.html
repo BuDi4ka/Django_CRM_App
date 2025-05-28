@@ -7,11 +7,15 @@
     <h1 class="mb-6 text-xl">My account</h1>
 
     <p class="mb-2">
-        <strong>Username: </strong> {{ requrst.user.username }}
+        <strong>Username: </strong> {{ request.user.username }}
     </p>
 
     <p class="mb-2">
-        <strong>Team: </strong> {{ team.name }}
+        <strong>Team: </strong> {{ team.name }} 
+
+        {% if team.created_by == request.user %}
+            <a href="{% url 'edit-team' team.id %}">(Edit)</a>
+        {% endif %}
     </p>
 
     <hr class="mb-4">
