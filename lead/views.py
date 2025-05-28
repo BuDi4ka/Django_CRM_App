@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from django.views.generic.edit import DeleteView
+from django.views import View
 
 
 from .forms import AddLeadForm
@@ -83,7 +84,6 @@ class LeadUpdateView(UpdateView):
         return queryset.filter(created_by=self.request.user, pk=self.kwargs.get('pk'))
     
 
-
 class LeadCreateView(CreateView):
     model = Lead
     fields = ('name', 'email', 'description', 'priority', 'status')
@@ -114,26 +114,25 @@ class LeadCreateView(CreateView):
         messages.success(self.request, 'The lead was created.')
         return redirect(self.get_success_url())
 
-        
 
+class ConvertLeadToClientView(View):
+    @method_decorator(login_required)
+    def post(self, request, pk, *args, **kwargs):
+        lead = get_object_or_404(Lead, pk=pk, created_by=request.user)
+        team = Team.objects.filter(created_by=request.user).first()
 
-
-@login_required
-def convert_to_client(request, pk):
-    lead = get_object_or_404(Lead, created_by=request.user)
-    team = Team.objects.filter(created_by=request.user)[0]
-
-    client = Client.objects.create(
-        name=lead.name,
-        email=lead.email,
-        description = lead.description,
-        created_by = request.user,
-        team = team
+        Client.objects.create(
+            name=lead.name,
+            email=lead.email,
+            description=lead.description,
+            created_by=request.user,
+            team=team
         )
-    
-    lead.converted_to_client = True
-    lead.save()
 
-    messages.success(request, 'The lead was converted to a client')
+        lead.converted_to_client = True
+        lead.save()
 
-    return redirect('leads:list')
+        messages.success(request, 'The lead was converted to a client')
+        return redirect('leads:list')
+
+            

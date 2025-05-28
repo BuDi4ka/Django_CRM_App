@@ -29,7 +29,11 @@
         <hr class="my-4">
 
         <div class="flex items-center mt-4">
-            <a href="{% url 'leads:convert' lead.id %}" class="py-2 px-4 rounded-xl bg-blue-500 text-white mr-2">Convert to Client</a>
+            <form id="convert_form_{{ lead.id }}" action="{% url 'leads:convert' lead.id %}" method="POST" class="inline mr-2">
+                {% csrf_token %}
+                <button type="submit" class="py-2 px-4 rounded-xl bg-blue-500 text-white">Convert to Client</button>
+            </form>
+
             <a href="{% url 'leads:edit' lead.id %}" class="py-2 px-4 rounded-xl bg-teal-500 text-white mr-2">Edit</a>
 
             <form id="lead_delete_form" action="{% url 'leads:delete' lead.pk %}" method="POST" class="inline">
