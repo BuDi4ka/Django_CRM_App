@@ -44,7 +44,6 @@ class LeadDetailView(DetailView):
         context["form"] = AddCommentForm()
         return context
     
-
     def get_queryset(self):
         queryset = super(LeadDetailView, self).get_queryset()
         return queryset.filter(created_by=self.request.user, pk=self.kwargs.get('pk'))
