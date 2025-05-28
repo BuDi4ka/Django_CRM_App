@@ -71,6 +71,7 @@ class LeadUpdateView(UpdateView):
     model = Lead
     fields = ('name', 'email', 'description', 'priority', 'status')
     template_name = 'lead/leads_edit.html'
+    success_url = reverse_lazy('leads:list')
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -81,55 +82,40 @@ class LeadUpdateView(UpdateView):
 
         return queryset.filter(created_by=self.request.user, pk=self.kwargs.get('pk'))
     
-    def get_success_url(self):
-        return reverse_lazy('leads:list')
 
 
 class LeadCreateView(CreateView):
     model = Lead
     fields = ('name', 'email', 'description', 'priority', 'status')
     template_name = 'lead/leads_add.html'
+    success_url = reverse_lazy('leads:list')
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_success_url(self):
-        return reverse_lazy('leads:list')
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["team"] = Team.objects.filter(created_by=self.request.user)[0]
         return context
-
-
-
-@login_required
-def leads_add(request):
-    team = Team.objects.filter(created_by=request.user)[0]
     
-    if request.method == "POST":
-        form = AddLeadForm(request.POST)
+    def form_valid(self, form):
+        team = Team.objects.filter(created_by=self.request.user).first()
 
-        if form.is_valid():
-            team = Team.objects.filter(created_by=request.user)[0]
-
-            lead = form.save(commit=False)
-            lead.created_by = request.user
-            lead.team = team
-            lead.save()
-
-            messages.success(request, 'The lead was created.')
- 
+        if team.leads.count() >= team.plan.max_leads:
+            messages.error(self.request, "You have reached the lead limit for your plan.")
             return redirect('leads:list')
-    
-    else:
-        form = AddLeadForm()
 
-    return render(request, 'lead/leads_add.html', {
-        'form': form,
-        'team': team,
-        })
+        self.object = form.save(commit=False)
+        self.object.created_by = self.request.user
+        self.object.team = team
+        self.object.save()
+        
+        messages.success(self.request, 'The lead was created.')
+        return redirect(self.get_success_url())
+
+        
+
 
 
 @login_required
