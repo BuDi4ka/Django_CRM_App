@@ -26,12 +26,14 @@ def clients_detail(request, pk):
 
 @login_required
 def clients_add(request):
+    team = Team.objects.filter(created_by=request.user)[0]
+
     if request.method == "POST":
         form = AddClientForm(request.POST)
 
         if form.is_valid():
             team = Team.objects.filter(created_by=request.user)[0]
-            
+
             client = form.save(commit=False)
             client.created_by = request.user
             client.team = team
@@ -44,7 +46,10 @@ def clients_add(request):
     else:
         form = AddClientForm()
 
-    return render(request, 'client/clients_add.html', {'form': form})
+    return render(request, 'client/clients_add.html', {
+        'form': form,
+        'team': team,
+        })
 
 
 @login_required
