@@ -7,8 +7,7 @@ from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from django.views.generic.edit import DeleteView
 from django.views import View
 
-
-from .forms import AddLeadForm
+from .forms import AddCommentForm
 from .models import Lead
 
 from client.models import Client
@@ -40,10 +39,14 @@ class LeadDetailView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = AddCommentForm()
+        return context
+    
 
     def get_queryset(self):
         queryset = super(LeadDetailView, self).get_queryset()
-
         return queryset.filter(created_by=self.request.user, pk=self.kwargs.get('pk'))
 
 
@@ -61,7 +64,6 @@ class LeadDeleteView(DeleteView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-
     def get_queryset(self):
         queryset = super(LeadDeleteView, self).get_queryset()
 
@@ -134,5 +136,22 @@ class ConvertLeadToClientView(View):
 
         messages.success(request, 'The lead was converted to a client')
         return redirect('leads:list')
+    
+
+class CommentCreateView(View):
+    def post(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+
+        form = AddCommentForm(request.POST)
+
+        if form.is_valid():
+            team = Team.objects.filter(created_by=self.request.user).first()
+            comment = form.save(commit=False)
+            comment.team = team 
+            comment.created_by = request.user
+            comment.lead_id = pk
+            comment.save()
+
+        return redirect('leads:detail', pk=pk)
 
             

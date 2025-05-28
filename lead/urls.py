@@ -11,5 +11,6 @@ urlpatterns = [
     path('<int:pk>/delete/', views.LeadDeleteView.as_view(), name='delete'),
     path('<int:pk>/edit/', views.LeadUpdateView.as_view(), name='edit'),
     path('<int:pk>/convert/', views.ConvertLeadToClientView.as_view(), name='convert'),
+    path('<int:pk>/comment/', views.CommentCreateView.as_view(), name='comment'),
 
 ]
