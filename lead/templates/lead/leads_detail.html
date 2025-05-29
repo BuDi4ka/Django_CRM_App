@@ -66,6 +66,19 @@
 
         <hr class="my-4">
 
+        <h2 class="mb-6 text-xl">Files</h2>
+
+
+        <form action="." method="POST">
+            {% csrf_token %}
+
+            {{ fileform.as_p}}
+
+            <button class="py-2 px-4 rounded-xl bg-blue-500 text-white">Sumbit</button>
+        </form>
+
+        <hr class="my-4">
+
         <a href="{% url 'leads:list' %}">Back to leads</a>
     </div>
 {% endblock %}

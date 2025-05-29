@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from django.views.generic.edit import DeleteView
 from django.views import View
 
-from .forms import AddCommentForm
+from .forms import AddCommentForm, AddFileForm
 from .models import Lead, Comment as ClientComment
 
 from client.models import Client
@@ -42,6 +42,7 @@ class LeadDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = AddCommentForm()
+        context["fileform"] = AddFileForm()
         return context
     
     def get_queryset(self):
