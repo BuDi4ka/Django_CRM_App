@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .models import Client
-from .forms  import AddClientForm, AddCommentForm
+from .forms  import AddClientForm, AddCommentForm, AddFileForm
 
 from team.models import Team
 
@@ -21,25 +21,36 @@ def clients_detail(request, pk):
     client = get_object_or_404(Client, created_by=request.user, pk=pk)
     team = Team.objects.filter(created_by=request.user)[0]
 
+    comment_form = AddCommentForm()
+    file_form = AddFileForm()
+
     if request.method == "POST":
-        form = AddCommentForm(request.POST)
+        if 'submit_comment' in request.POST:
+            comment_form = AddCommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.team = team 
+                comment.created_by = request.user
+                comment.client = client
+                comment.save()
+                return redirect('clients:detail', pk=pk)
 
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.team = team 
-            comment.created_by = request.user
-            comment.client = client
-            comment.save()
-
-            return redirect('clients:detail', pk=pk)
-        
-    else:
-        form = AddCommentForm()
+        elif 'submit_file' in request.POST:
+            file_form = AddFileForm(request.POST, request.FILES)
+            if file_form.is_valid():
+                file = file_form.save(commit=False)
+                file.team = team
+                file.client = client
+                file.created_by = request.user
+                file.save()
+                return redirect('clients:detail', pk=pk)
 
     return render(request, 'client/clients_detail.html', {
         'client': client,
-        'form': form,
+        'form': comment_form,
+        'file_form': file_form,
     })
+
 
 @login_required
 def clients_add(request):
