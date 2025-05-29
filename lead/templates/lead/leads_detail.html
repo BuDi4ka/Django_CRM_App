@@ -77,6 +77,16 @@
             <button class="py-2 px-4 rounded-xl bg-blue-500 text-white">Sumbit</button>
         </form>
 
+        <div class="space-y-4">
+            {% for file in lead.files.all %}
+                <div class="bg-gray-100 py-6 px-6 rounded-xl">
+                    <p class="mb-2"><strong>{{ file.created_by }}</strong> @ {{ file.created_at }}</p>
+                    
+                    <a href="{{ file.file.url }}">Download</a>
+                </div>
+            {% endfor %}
+        </div>
+
         <hr class="my-4">
 
         <a href="{% url 'leads:list' %}">Back to leads</a>
