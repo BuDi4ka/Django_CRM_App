@@ -11,5 +11,6 @@ urlpatterns = [
     path('<int:pk>/edit/', views.clients_edit, name='edit'),
     path('<int:pk>/comment/', views.clients_detail, name='comment'),
     path('<int:pk>/file/', views.clients_detail, name='file'),
-    path('add/', views.clients_add, name='add')
+    path('add/', views.clients_add, name='add'),
+    path('export/', views.clients_export, name='export')
 ]
