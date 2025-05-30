@@ -12,5 +12,5 @@ urlpatterns = [
     path('<int:pk>/comment/', views.clients_detail, name='comment'),
     path('<int:pk>/file/', views.clients_detail, name='file'),
     path('add/', views.clients_add, name='add'),
-    path('export/', views.clients_export, name='export')
+    path('export/', views.clients_export, name='export'),
 ]
