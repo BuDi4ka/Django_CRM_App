@@ -6,8 +6,8 @@ from .forms import TeamForm
 from .models import Team
 
 @login_required
-def detail(request):
-    team = Team.objects.filter(created_by=request.user)[0]
+def detail(request, pk):
+    team = get_object_or_404(Team, created_by=request.user, pk=pk)
 
     return render(request, 'team/detail.html', {'team': team})
 
