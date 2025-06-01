@@ -1,4 +1,9 @@
 from .models import Team
 
 def active_team(request):
-    return {'team': Team.objects.filter(created_by=request.user)[0]}
+    if request.user.is_authenticated:
+        active_team = Team.objects.filter(created_by=request.user)[0]
+    else: 
+        active_team = None
+
+    return {'team': active_team}

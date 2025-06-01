@@ -6,6 +6,7 @@ from django.urls import path, include
 
 from core.views import index, about
 from user_profile.views import LogoutViaGet
+from user_profile.forms import LoginForm
 
 urlpatterns = [
     path('', index, name='index'),
@@ -15,7 +16,7 @@ urlpatterns = [
     path('dashboard/', include('user_profile.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('about/', about, name='about'),
-    path('log-in/', views.LoginView.as_view(template_name='user_profile/login.html'), name='login'),
+    path('log-in/', views.LoginView.as_view(template_name='user_profile/login.html', authentication_form=LoginForm), name='login'),
     path('log-out/', LogoutViaGet.as_view(), name='logout'),
     # path('log-out/', LogoutViaGet.as_view(), name='logout'),
     path("admin/", admin.site.urls),
