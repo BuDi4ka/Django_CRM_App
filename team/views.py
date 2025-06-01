@@ -5,6 +5,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import TeamForm
 from .models import Team
 
+@login_required
+def detail(request):
+    team = Team.objects.filter(created_by=request.user)[0]
+
+    return render(request, 'team/detail.html', {'team': team})
+
 
 @login_required
 def edit_team(request, pk):
