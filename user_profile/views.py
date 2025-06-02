@@ -14,12 +14,12 @@ def signup(request):
 
         if form.is_valid():
             user = form.save()
-
-            UserProfile.objects.create(user=user)
             
             team = Team.objects.create(name=f"The team of {request.name}", created_by=user)
             team.members.add(user)
             team.save()
+
+            userprofile = UserProfile.objects.create(user=user, active_team_id=team)
 
             return redirect("/log-in/")
     else:
