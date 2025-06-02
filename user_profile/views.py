@@ -17,8 +17,8 @@ def signup(request):
 
             UserProfile.objects.create(user=user)
             
-            team = Team.objects.create(name=f"The team of {request.name}", created_by=request.user)
-            team.members.add(request.user)
+            team = Team.objects.create(name=f"The team of {request.name}", created_by=user)
+            team.members.add(user)
             team.save()
 
             return redirect("/log-in/")
