@@ -79,11 +79,11 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["team"] = Team.objects.filter(created_by=self.request.user)[0]
+        context["team"] = self.request.user.useprofile.active_team
         return context
     
     def form_valid(self, form):
-        team = Team.objects.filter(created_by=self.request.user).first()
+        team = team = self.request.user.useprofile.active_team
 
         if team.leads.count() >= team.plan.max_leads:
             messages.error(self.request, "You have reached the lead limit for your plan.")
@@ -101,7 +101,7 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
 class ConvertLeadToClientView(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         lead = get_object_or_404(Lead, pk=pk, created_by=request.user)
-        team = Team.objects.filter(created_by=request.user).first()
+        team = request.user.useprofile.active_team
 
         client = Client.objects.create(
             name=lead.name,
@@ -135,7 +135,7 @@ class CommentCreateView(LoginRequiredMixin, View):
         form = AddCommentForm(request.POST)
 
         if form.is_valid():
-            team = Team.objects.filter(created_by=self.request.user).first()
+            team = request.user.useprofile.active_team
             comment = form.save(commit=False)
             comment.team = team 
             comment.created_by = request.user
@@ -151,7 +151,7 @@ class FileCreateView(LoginRequiredMixin, View):
         form = AddFileForm(request.POST, request.FILES)
 
         if form.is_valid():
-            team = Team.objects.filter(created_by=self.request.user).first()
+            team = request.user.useprofile.active_team
             file = form.save(commit=False)
             file.team = team
             file.lead_id = pk 
