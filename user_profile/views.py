@@ -41,8 +41,4 @@ class LogoutViaGet(LogoutView):
 
 @login_required
 def myaccount(request):
-    team = request.user.userprofile.active_team
-
-    return render(request, 'user_profile/myaccount.html', {
-        'team': team
-    })
+    return render(request, 'user_profile/myaccount.html')
