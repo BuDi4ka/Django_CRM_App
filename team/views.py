@@ -5,6 +5,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import TeamForm
 from .models import Team
 
+
+@login_required
+def teams_list(request):
+    teams = Team.objects.filter(members__in=[request.user])
+
+    return render(request, 'team/teams_list.html', {'teams': teams})
+
+
 @login_required
 def detail(request, pk):
     team = get_object_or_404(Team, created_by=request.user, pk=pk)
